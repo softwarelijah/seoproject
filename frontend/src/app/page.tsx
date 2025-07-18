@@ -1,6 +1,5 @@
-// src/app/page.tsx
-
 'use client'
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -10,12 +9,12 @@ import { motion } from "framer-motion";
 
 export default function LandingPage() {
   return (
-      <>
+      <div className="bg-white text-gray-900">
         {/* ─────────────────── Hero ─────────────────── */}
-        <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-green-50 to-white px-6 py-24 text-center">
+        <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden bg-white px-6 py-24 text-center">
           {/* background accent blur */}
           <div className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-green-200/50 blur-[120px]" />
+            <div className="absolute left-1/2 top-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-green-100 blur-[120px]" />
           </div>
 
           <motion.h1
@@ -24,14 +23,14 @@ export default function LandingPage() {
               transition={{ duration: 0.6 }}
               className="mb-6 max-w-4xl text-5xl font-extrabold leading-tight tracking-tight text-gray-900 md:text-6xl"
           >
-            Track & <span className="text-green-600">Reduce</span> Your Food Waste
+            Track & <span className="text-green-700">Reduce</span> Your Food Waste
           </motion.h1>
 
           <motion.p
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="mx-auto mb-10 max-w-2xl text-lg text-gray-600"
+              className="mx-auto mb-10 max-w-2xl text-lg text-gray-700"
           >
             Visualize what’s going into the trash, discover smarter shopping habits,
             and save money — all in one dashboard.
@@ -43,14 +42,18 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="flex flex-wrap items-center justify-center gap-4"
           >
-            <Button asChild size="lg">
+            <Button
+                asChild
+                size="lg"
+                className="bg-green-700 hover:bg-green-800 text-white"
+            >
               <Link href="/dashboard">Get Started Free</Link>
             </Button>
             <Button
                 variant="outline"
                 size="lg"
                 asChild
-                className="border-gray-300 bg-white"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
             >
               <a
                   href="https://github.com/your-org/food-waste-tracker"
@@ -70,23 +73,23 @@ export default function LandingPage() {
               className="mt-16 w-full max-w-4xl"
           >
             <Image
-                src="/hero-dashboard.png" // drop a static export or remote URL here
+                src="/seoherodashboard.png"
                 alt="Dashboard screenshot"
                 width={1600}
                 height={900}
-                className="rounded-2xl shadow-xl ring-1 ring-gray-200"
+                className="rounded-2xl shadow-xl ring-1 ring-gray-200 bg-white"
                 priority
             />
           </motion.div>
         </section>
 
         {/* ─────────────────── Feature Highlights ─────────────────── */}
-        <section className="mx-auto max-w-6xl px-6 py-24">
+        <section className="mx-auto max-w-6xl px-6 py-24 bg-white rounded-xl">
           <div className="mb-16 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
               Why you’ll love it
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+            <p className="mx-auto mt-4 max-w-2xl text-gray-700">
               From quick logging to data-rich insights, every pixel is designed to
               nudge you toward zero waste.
             </p>
@@ -112,22 +115,22 @@ export default function LandingPage() {
         </section>
 
         {/* ─────────────────── CTA Banner ─────────────────── */}
-        <section className="relative isolate overflow-hidden bg-green-600 py-24 text-center text-white">
-          <h3 className="mb-6 text-3xl font-semibold tracking-tight">
+        <section className="py-24 text-center bg-white">
+          <h3 className="mb-6 text-3xl font-semibold tracking-tight text-gray-900">
             Ready to waste less and save more?
           </h3>
-          <Button asChild size="lg" variant="secondary" className="bg-white text-green-700 hover:bg-green-50">
+          <Button
+              asChild
+              size="lg"
+              className="bg-green-700 hover:bg-green-800 text-white"
+          >
             <Link href="/dashboard">Create Your Free Account</Link>
           </Button>
-
-          {/* decorative blur */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-transparent to-green-600/30" />
         </section>
-      </>
+      </div>
   );
 }
 
-/* ───────── Small helper component ───────── */
 type FeatureProps = {
   icon: React.ReactNode;
   title: string;
@@ -136,13 +139,13 @@ type FeatureProps = {
 
 function FeatureCard({ icon, title, description }: FeatureProps) {
   return (
-      <Card className="h-full">
+      <Card className="h-full bg-white border border-gray-200 shadow-sm hover:shadow-lg transition-shadow">
         <CardContent className="flex flex-col gap-4 p-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50">
             {icon}
           </div>
           <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
-          <p className="text-sm text-gray-600">{description}</p>
+          <p className="text-sm text-gray-700">{description}</p>
         </CardContent>
       </Card>
   );
