@@ -56,7 +56,7 @@ export default function LandingPage() {
                 className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
             >
               <a
-                  href="https://github.com/your-org/food-waste-tracker"
+                  href="https://github.com/softwarelijah/seoproject"
                   target="_blank"
                   rel="noreferrer"
               >
