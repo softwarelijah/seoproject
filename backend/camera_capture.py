@@ -40,8 +40,13 @@ def main():
     # Store result to display on screen
     result_text = ""
 
-    # Log a new user (example: username and email)
-    user_id = log_user("testuser", "testuser@example.com")
+    # Set role: 'admin', 'user', or 'guest' - ONLY AN EXAMPLE (Change as needed!!!)
+    role = 'user'
+
+    # Log a new user (example: username, email, and role)
+    user_id = None
+    if role in ('admin', 'user'):
+        user_id = log_user("testuser", "testuser@example.com", role)
 
     while True:
         # Grab the webcamera's image.
@@ -84,9 +89,12 @@ def main():
                 result_text = class_name[2:].strip() + " (" + str(np.round(confidence_score * 100))[:-2] + "%)"
                 result_instruction = f"Instruction: {instruction}"
 
-                # save the image and log the result
-                image_path = save_image(image, class_name[2:].strip())
-                log_result(user_id, class_name[2:].strip(), np.round(confidence_score * 100), image_path)
+                # Permission control: only admin/user can save and log
+                if role in ('admin', 'user'):
+                    image_path = save_image(image, class_name[2:].strip())
+                    log_result(user_id, class_name[2:].strip(), np.round(confidence_score * 100), image_path)
+                else:
+                    image_path = None  # guest cannot save or log
 
                 # Reset countdown
                 next_prediction_time = time.time() + countdown_seconds
