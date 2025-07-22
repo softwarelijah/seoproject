@@ -8,6 +8,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     email TEXT NOT NULL,
+    password TEXT NOT NULL,
     role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'guest'))
 )''')
 
@@ -29,7 +30,10 @@ def log_result(user_id, class_name, confidence_score, image_path):
                    (user_id, image_path, class_name, confidence_score))
     connection.commit()
 
-def log_user(username, email, role):
-    cursor.execute('''INSERT INTO users (username, email, role) VALUES (?, ?, ?)''', (username, email, role))
+def log_user(username, email, password, role='user'):
+    cursor.execute(
+        '''INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)''',
+        (username, email, password, role)
+    )
     connection.commit()
     return cursor.lastrowid

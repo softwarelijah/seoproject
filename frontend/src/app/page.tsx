@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Leaf, PieChart, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import CameraAnalysis from "./camera_analysis";
 
 export default function LandingPage() {
   return (
@@ -127,6 +128,9 @@ export default function LandingPage() {
             <Link href="/dashboard">Create Your Free Account</Link>
           </Button>
         </section>
+
+        {/* ─────────────────── Camera Analysis ─────────────────── */}
+        <CameraAnalysis />
       </div>
   );
 }

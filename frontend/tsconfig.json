@@ -28,6 +28,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/app/camera_analysis.tsx"  ],
   "exclude": ["node_modules"]
 }
