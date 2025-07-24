@@ -4,9 +4,14 @@ import numpy as np
 import cv2
 import base64
 from camera_capture import process_and_log
+from database_logger import create_tables
+
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
+
+# Initialize database tables
+create_tables()
 
 
 # Endpoint to handle image analysis and logging

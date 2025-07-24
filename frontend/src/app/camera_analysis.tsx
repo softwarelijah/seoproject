@@ -15,7 +15,6 @@ function CameraAnalysis() {
         return;
       }
 
-      // Remove the data:image/jpeg;base64, prefix
       const base64 = imageSrc.split(",")[1];
       console.log("base64 length:", base64.length);
 
@@ -29,8 +28,8 @@ function CameraAnalysis() {
           },
           body: JSON.stringify({
             image: base64,
-            user_id: 1, // Replace with actual user_id if needed
-            role: "guest", // Or "admin" or "user"
+            user_id: 1,
+            role: "admin",
             password: "1234",
           }),
         });

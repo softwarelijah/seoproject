@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('food_watste_tracker.db')
+conn = sqlite3.connect('food_waste_tracker.db')
 cursor = conn.cursor()
 
 cursor.execute('DROP TABLE IF EXISTS analysis_logs')

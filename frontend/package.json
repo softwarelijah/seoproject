@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "frontend": "next dev --turbopack",
+    "backend": "cd ../backend && python camera_app.py",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

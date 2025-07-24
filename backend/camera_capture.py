@@ -24,7 +24,7 @@ def analyze_image(image):
 
 
 # process the image, log the result, and return the details as a dictionary
-def process_and_log(image, user_id=None, role='guest'):
+def process_and_log(image, user_id=None, role='guest', password=None):
     """
     Analyze image, save and log result if permitted by role.
     Returns: dict with class_name, confidence_score, image_path, instruction

@@ -15,4 +15,9 @@ payload = {
 
 response = requests.post("http://localhost:5000/analyze", json=payload)
 print("Status code:", response.status_code)
-print("Response:", response.json())
+
+try:
+    print("Response JSON:", response.json())
+except Exception as e:
+    print("Raw Response Text:", response.text)
+    print("Error decoding JSON:", e)

@@ -2,8 +2,16 @@ import sqlite3
 
 
 def show_table(table_name, user_id=None, role='guest'):
-    conn = sqlite3.connect('food_watste_tracker.db')
+    conn = sqlite3.connect('food_waste_tracker.db')
     cursor = conn.cursor()
+
+     # Check if the table exists
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
+    if cursor.fetchone() is None:
+        print(f"Table '{table_name}' does not exist.")
+        conn.close()
+        return
+
 
     # Admin can view all tables
     if role == 'admin':
