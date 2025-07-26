@@ -1,0 +1,115 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.description {
+  font-size: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.webcam {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.capture_button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 32px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.capture_button:hover {
+  background-color: #45a049;
+
+}
+.capture_button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error_message {
+  color: red;
+  font-weight: bold;
+  margin-top: 16px;
+}
+
+.result_container {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+.class_name {
+  font-size: 18px;
+  font-weight: bold;
+}
+.confidence_score {
+  font-size: 16px;
+  margin-top: 8px;
+}
+.instruction {
+  font-size: 14px;
+  margin-top: 8px;
+}
+.saved_image {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #555;
+}
+
+.dimensions_controls {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+}
+.width_label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+.width_input {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 8px;
+}
+
+.reset_button {
+  background-color: hsl(4, 90%, 58%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+.reset_button:hover {
+  background-color: hsl(0, 65%, 51%);
+}

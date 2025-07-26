@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "frontend": "next dev --turbopack",
+    "frontend": "cross-env HOST=192.168.68.56 next dev --turbopack",
     "backend": "cd ../backend && python camera_app.py",
     "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "build": "next build",
@@ -28,6 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.4.1",
     "tailwindcss": "^4",
