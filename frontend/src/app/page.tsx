@@ -43,13 +43,13 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="flex flex-wrap items-center justify-center gap-4"
           >
-            <Button
-                asChild
-                size="lg"
-                className="bg-green-700 hover:bg-green-800 text-white"
-            >
-              <Link href="/dashboard">Get Started Free</Link>
-            </Button>
+                      <Button
+              asChild
+              size="lg"
+              className="bg-green-700 hover:bg-green-800 text-white"
+          >
+            <Link href="/signup">Get Started Free</Link>
+          </Button>
             <Button
                 variant="outline"
                 size="lg"
@@ -125,7 +125,7 @@ export default function LandingPage() {
               size="lg"
               className="bg-green-700 hover:bg-green-800 text-white"
           >
-            <Link href="/dashboard">Create Your Free Account</Link>
+            <Link href="/signup">Create Your Free Account</Link>
           </Button>
         </section>
 

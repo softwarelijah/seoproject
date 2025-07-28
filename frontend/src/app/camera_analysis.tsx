@@ -1,141 +1,128 @@
-import Webcam from "react-webcam";
-import { useRef, useState, useEffect } from "react";
-import styles from './camera_analysis.module.css';
+'use client'
 
-// CameraAnalysis component for capturing and analyzing images from webcam
-function CameraAnalysis() {
+import React, { useRef, useState } from 'react';
+import Webcam from 'react-webcam';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+
+export default function CameraAnalysis() {
   const webcamRef = useRef<Webcam>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 640, height: 240 });
 
-  
-
-  // Adjusting Webcam size by setting width (will automatically adjust height to maintain aspect ratio)
-  const adjustWebcamSize = (newWidth: number) =>{
+  // Adjust webcam size
+  const adjustWebcamSize = (newWidth: number) => {
     setDimensions({ width: newWidth, height: Math.round(newWidth * (240 / 320)) });
-  }
- 
-  // Handle slider changes to update webcam dimensions
-  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
-    const { name, value } = event.target;
-    setDimensions((prev) => ({
-      ...prev,
-      [name]: parseInt(value, 10)
-    }));
   };
 
-  // Capture image from webcam and send it to backend for analysis
+  // Handle slider change
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDimensions(prev => ({ ...prev, [name]: parseInt(value, 10) }));
+  };
+
+  // Capture and analyze
   const captureAndAnalyze = async () => {
-    
-    
-    if (webcamRef.current) {
-      const imageSrc = webcamRef.current.getScreenshot();
-      console.log("imageSrc:", imageSrc);
-      if (!imageSrc) {
-        console.log("No image captured from webcam.");
-        return;
-      }
+    if (!webcamRef.current) return;
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (!imageSrc) return;
 
-      const base64 = imageSrc.split(",")[1];
-      console.log("base64 length:", base64.length);
-
-      setLoading(true);
-      try {
-        console.log("Sending request to backend...");
-        const response = await fetch("http://localhost:5000/analyze", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // Sending base64 image data along with user info
-          body: JSON.stringify({
-            image: base64,
-            user_id: 1,
-            role: "guest",
-            password: "1234",
-          }),
-        });
-        // Check if the response is ok
-        console.log("Response status:", response.status);
-        const data = await response.json();
-        console.log("Response data:", data);
-        setResult(data);
-      } catch (error) {
-        console.error("Error during fetch or JSON parsing:", error);
-        setResult({ error: "Failed to analyze image." });
-      }
+    const base64 = imageSrc.split(',')[1];
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:5000/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64, user_id: 1, role: 'guest', password: '1234' }),
+      });
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      console.error(err);
+      setResult({ error: 'Failed to analyze image.' });
+    } finally {
       setLoading(false);
-    } else {
-      console.log("webcamRef.current is null");
     }
   };
 
-  // Render the webcam and controls
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Camera Analysis</h1>
-      <p className={styles.description}>
-        Capture and analyze images from your webcam in real-time.
-      </p>
+      <Card className="max-w-lg mx-auto my-12 bg-white border border-gray-200 shadow-sm">
+        <CardContent className="flex flex-col gap-6 p-6">
+          <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl font-bold text-gray-900"
+          >
+            Camera Analysis
+          </motion.h2>
+          <p className="text-sm text-gray-700">
+            Capture and analyze images from your webcam in real-time.
+          </p>
 
-      <Webcam
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        width={dimensions.width}
-        height={dimensions.height}
-        className={styles.webcam}
-      />
-      <div>
-        <button 
-          onClick={captureAndAnalyze} 
-          disabled={loading}
-          className={styles.capture_button}>
-          {loading ? "Analyzing..." : "Capture & Analyze"}
-        </button>
-      </div>
-      {result && (
-        <div style={{ marginTop: 16 }}>
-          {result.error ? (
-            <div style={{ color: "red" }} className={styles.error_message}>{result.error}</div>
-          ) : (
-            <div className={styles.result_container}>
-              <div className={styles.class_name}>
-                <b>Class:</b> {result.class_name}
-              </div>
-              <div className={styles.confidence_score}>
-                <b>Confidence:</b> {result.confidence_score}%
-              </div>
-              <div className={styles.instruction}>
-                <b>Instruction:</b> {result.instruction}
-              </div>
-              {result.image_path && (
-                <div className={styles.saved_image}>
-                  Saved Image Path in Local Storage!
-                </div>
-              )}
-            </div>
+          <div className="flex justify-center">
+            <Webcam
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                width={dimensions.width}
+                height={dimensions.height}
+                className="rounded-lg border border-gray-200 shadow-sm"
+            />
+          </div>
+
+          <Button
+              onClick={captureAndAnalyze}
+              disabled={loading}
+              size="lg"
+              className="bg-green-700 hover:bg-green-800 text-white"
+          >
+            {loading ? 'Analyzing...' : 'Capture & Analyze'}
+          </Button>
+
+          {result && (
+              <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-4 space-y-2 p-4 bg-green-50 rounded-lg"
+              >
+                {result.error ? (
+                    <p className="text-red-600">{result.error}</p>
+                ) : (
+                    <>
+                      <p className="text-gray-900"><strong>Class:</strong> {result.class_name}</p>
+                      <p className="text-gray-900"><strong>Confidence:</strong> {result.confidence_score}%</p>
+                      <p className="text-gray-900"><strong>Instruction:</strong> {result.instruction}</p>
+                      {result.image_path && (
+                          <p className="text-gray-600 italic">Saved image to local storage.</p>
+                      )}
+                    </>
+                )}
+              </motion.div>
           )}
-        </div>
-      )}
 
-      <div className={styles.dimensions_controls}>
-        <label className={styles.width_label}>
-          Width: <span>{dimensions.width}px</span>
-          <input className={styles.width_input}
-            type="range"
-            name="width"
-            min="160"
-            max="1280"
-            value={dimensions.width}
-            onChange={handleSliderChange}
-          />
-        </label>
-
-        <button className={styles.reset_button} onClick={() => adjustWebcamSize(640)}>Reset Size</button>
-      </div>
-    </div>
+          <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+            <div className="flex-1">
+              <label className="text-sm text-gray-700">
+                Width: <span className="font-medium">{dimensions.width}px</span>
+              </label>
+              <input
+                  type="range"
+                  name="width"
+                  min={160}
+                  max={1280}
+                  value={dimensions.width}
+                  onChange={handleSliderChange}
+                  className="w-full mt-1"
+              />
+            </div>
+            <Button variant="outline" onClick={() => adjustWebcamSize(640)}>
+              Reset Size
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
   );
 }
-
-export default CameraAnalysis;
