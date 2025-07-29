@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import base64
 from camera_capture import process_and_log
-from database_logger import create_tables
+from database_logger import create_tables, get_analysis_history, get_user_stats
 
 
 app = Flask(__name__)
@@ -39,6 +39,57 @@ def analyze():
     # Process and log (pass password along)
     result = process_and_log(image, user_id, role, password)
     return jsonify(result)
+
+
+# Endpoint to get analysis history
+@app.route('/history', methods=['GET'])
+def get_history():
+    """
+    Endpoint to get analysis history for dashboard and insights.
+    """
+    try:
+        # Get query parameters
+        user_id = request.args.get('user_id', type=int)
+        role = request.args.get('role', 'guest')
+        limit = request.args.get('limit', 10, type=int)
+        
+        # Get history from database
+        history = get_analysis_history(user_id, role, limit)
+        
+        # Format the response
+        formatted_history = []
+        for record in history:
+            formatted_history.append({
+                'id': record[0],
+                'user_id': record[1],
+                'timestamp': record[2],
+                'image_path': record[3],
+                'class_name': record[4],
+                'confidence_score': record[5]
+            })
+        
+        return jsonify(formatted_history)
+    except Exception as e:
+        return jsonify({'error': f'Failed to get history: {str(e)}'}), 500
+
+
+# Endpoint to get user statistics
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    """
+    Endpoint to get user statistics for dashboard.
+    """
+    try:
+        user_id = request.args.get('user_id', type=int)
+        role = request.args.get('role', 'guest')
+        
+        # Get stats from database
+        stats = get_user_stats(user_id, role)
+        
+        return jsonify(stats)
+    except Exception as e:
+        return jsonify({'error': f'Failed to get stats: {str(e)}'}), 500
+
 
 # return a simple message for the root endpoint
 @app.route('/')
