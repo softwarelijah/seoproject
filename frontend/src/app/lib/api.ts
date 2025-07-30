@@ -103,7 +103,11 @@ export class USDAFoodAPI {
       if (error instanceof APIError) {
         throw error;
       }
-      throw new APIError(`Network error: ${error.message}`);
+      throw new APIError(
+        `Network error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }
 
@@ -143,7 +147,10 @@ export class WasteImpactCalculator {
     foodType: string,
     quantity: number = 1
   ): WasteImpact {
-    const impactData = {
+    const impactData: Record<
+      string,
+      { carbon: number; water: number; cost: number; compostable: boolean }
+    > = {
       organic: { carbon: 0.5, water: 100, cost: 2.5, compostable: true },
       recycle: { carbon: 1.2, water: 50, cost: 1.8, compostable: false },
       trash: { carbon: 2.0, water: 200, cost: 3.2, compostable: false },
@@ -182,7 +189,7 @@ export class LocalBackendAPI {
       const result: AnalysisResult = await response.json();
 
       // Enhance with USDA data if it's a food item
-      if (result.class_name && !result.error) {
+      if (result.class_name) {
         try {
           const usdaResults = await USDAFoodAPI.searchFoods(
             result.class_name,
@@ -210,7 +217,11 @@ export class LocalBackendAPI {
       if (error instanceof APIError) {
         throw error;
       }
-      throw new APIError(`Network error: ${error.message}`);
+      throw new APIError(
+        `Network error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }
 
@@ -239,7 +250,11 @@ export class LocalBackendAPI {
       if (error instanceof APIError) {
         throw error;
       }
-      throw new APIError(`Network error: ${error.message}`);
+      throw new APIError(
+        `Network error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }
 }
