@@ -6,7 +6,7 @@ def create_tables():
     
     cur.execute('''CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
+        name TEXT NOT NULL,
         email TEXT NOT NULL,
         password TEXT NOT NULL,
         role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'guest'))
@@ -37,13 +37,13 @@ def log_result(user_id, class_name, confidence_score, image_path):
     conn.commit()
     conn.close()
 
-def log_user(username, email, password, role='user'):
+def log_user(name, email, password, role='user'):
     conn = sqlite3.connect('food_waste_tracker.db')
     cur = conn.cursor()
     cur.execute(
-        '''INSERT INTO users (username, email, password, role)
+        '''INSERT INTO users (name, email, password, role)
            VALUES (?, ?, ?, ?)''',
-        (username, email, password, role)
+        (name, email, password, role)
     )
     conn.commit()
     user_id = cur.lastrowid

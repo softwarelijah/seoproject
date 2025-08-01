@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,35 @@ import FoodWasteAPI, { AnalysisResult } from "./lib/api";
 
 export default function CameraAnalysis() {
   const webcamRef = useRef<Webcam>(null);
+  const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
+
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 640, height: 240 });
+  const [dimensions, setDimensions] = useState({ width: 463, height: 240 });
+
+  // mount cameras
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+        setCameras(videoDevices);
+        if (videoDevices.length > 0) {
+          setSelectedCamera(videoDevices[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error fetching cameras:", error);
+      }
+    };
+    fetchCameras();
+  }, []);
+
+  const handleCameraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCamera(e.target.value);
+  };
 
   // Adjust webcam size
   const adjustWebcamSize = (newWidth: number) => {
@@ -70,6 +96,24 @@ export default function CameraAnalysis() {
         <p className="text-sm text-gray-700">
           Capture and analyze images from your webcam in real-time.
         </p>
+
+        {cameras.length > 0 && (
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-700 mb-1">Select Camera:</label>
+            <select
+              className="border border-gray-300 rounded px-2 py-1"
+              value={selectedCamera || ""}
+              onChange={handleCameraChange}
+            >
+              {cameras.map((camera, index) => (
+                <option key={camera.deviceId} value={camera.deviceId}>
+                  {camera.label || `Camera ${index + 1}`}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
 
         <div className="flex justify-center">
           <Webcam
@@ -194,13 +238,13 @@ export default function CameraAnalysis() {
               type="range"
               name="width"
               min={160}
-              max={1280}
+              max={463}
               value={dimensions.width}
               onChange={handleSliderChange}
               className="w-full mt-1"
             />
           </div>
-          <Button variant="outline" onClick={() => adjustWebcamSize(640)}>
+          <Button variant="outline" onClick={() => adjustWebcamSize(463)}>
             Reset Size
           </Button>
         </div>

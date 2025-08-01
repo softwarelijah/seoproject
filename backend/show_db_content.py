@@ -1,5 +1,15 @@
 import sqlite3
 
+def get_user_credentials():
+    conn = sqlite3.connect('food_waste_tracker.db')
+    cursor = conn.cursor()
+    # Fetch all user credentials
+    cursor.execute("SELECT email, password, id FROM users")
+    result = cursor.fetchall()
+
+    # Close the connection and return the result
+    conn.close()
+    return result
 
 def show_table(table_name, user_id=None, role='guest'):
     conn = sqlite3.connect('food_waste_tracker.db')

@@ -14,11 +14,38 @@ export default function SignUpPage() {
     password: "",
     confirmPassword: "",
   });
+  const [buttonText, setButtonText] = useState("Create Account");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement sign up logic
-    console.log("Sign up:", formData);
+
+    if (formData.password !== formData.confirmPassword) {
+      setButtonText("Passwords do not match");
+      setTimeout(() => setButtonText("Create Account"), 2000);
+      return;
+    }
+    setButtonText("Creating account...");
+
+    const response = await fetch("http://localhost:5000/sign_up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      setButtonText(data.message);
+      setTimeout(() => setButtonText("Create Account"), 2000);
+      return;
+    }
+
+    setButtonText("Account created!");
+    setTimeout(() => {
+      setButtonText("Create Account");
+      window.location.href = "/login";
+    }, 2000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,8 +180,9 @@ export default function SignUpPage() {
               <Button
                 type="submit"
                 className="w-full bg-green-700 hover:bg-green-800 text-white py-2"
+                disabled={buttonText === "Creating account..."}
               >
-                Create Account
+                {buttonText}
               </Button>
             </form>
 

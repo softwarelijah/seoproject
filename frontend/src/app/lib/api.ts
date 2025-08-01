@@ -44,6 +44,7 @@ export interface AnalysisResult {
   confidence_score: number;
   image_path?: string;
   instruction: string;
+  error?: string;
   usdaData?: USDAFoodDetails;
   wasteImpact?: WasteImpact;
 }

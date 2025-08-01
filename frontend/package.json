@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "frontend": "cross-env HOST=192.168.68.56 next dev --turbopack",
-    "backend": "cd ../backend && python camera_app.py",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "backend-auth": "cd ../backend && python sign_up_and_login.py",
+    "backend-camera": "cd ../backend && python camera_app.py",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend-auth\" \"npm run backend-camera\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

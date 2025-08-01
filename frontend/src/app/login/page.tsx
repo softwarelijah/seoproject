@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,15 +8,54 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
+  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [buttonText, setButtonText] = useState("Sign In");
+  const [user, setUser] = useState(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      console.log("User already logged in:", parsedUser);
+      window.location.href = "/";
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log("Login:", formData);
+    setButtonText("Verifying...");
+    try {
+      const response = await fetch("http://localhost:5000/log_in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const data = await response.json();
+      setButtonText("Success!");
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+
+      setTimeout(() => {
+        window.location.href = "/";  // Reloads and navigates to homepage
+      }, 1000);
+    } catch (error) {
+      setButtonText("Login failed. Please check your credentials.");
+      setTimeout(() => setButtonText('Sign In'), 2000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,8 +146,9 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="w-full bg-green-700 hover:bg-green-800 text-white py-2"
+                disabled={buttonText === 'Verifying...'}
               >
-                Sign In
+                {buttonText}
               </Button>
             </form>
 

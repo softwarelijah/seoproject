@@ -86,7 +86,7 @@ def display_overlay_text(image, countdown_remaining, result_text, result_instruc
         )
 
 # camera loop for capturing images and processing them (only for testing)
-def camera_loop(role='user', username="testuser", email="testuser@example.com", password="testpass"):
+def camera_loop(role='user', name="testuser", email="testuser@example.com", password="testpass"):
     np.set_printoptions(suppress=True)
     camera = cv2.VideoCapture(0)
     fps = 30
@@ -99,7 +99,7 @@ def camera_loop(role='user', username="testuser", email="testuser@example.com", 
 
     # Log user if role is admin or user
     if role in ('admin', 'user'):
-        user_id = log_user(username, email, password, role)
+        user_id = log_user(name, email, password, role)
     while True:
         # initialize camera and read frame
         ret, image = camera.read()
