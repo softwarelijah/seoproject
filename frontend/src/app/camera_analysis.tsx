@@ -62,13 +62,16 @@ export default function CameraAnalysis() {
     const base64 = imageSrc.split(",")[1];
     setLoading(true);
     try {
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const { id, role } = userData;
       const data = await FoodWasteAPI.analyzeImage({
         image: base64,
-        user_id: 1,
-        role: "guest",
+        user_id: id,
+        role: role || "guest", // Default to 'guest' if no role is set
         password: "1234",
       });
       setResult(data);
+
     } catch (err) {
       console.error(err);
       setResult({

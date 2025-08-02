@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import numpy as np
 import cv2
@@ -38,6 +38,8 @@ def analyze():
     
     # Process and log (pass password along)
     result = process_and_log(image, user_id, role, password)
+
+
     return jsonify(result)
 
 
@@ -52,7 +54,10 @@ def get_history():
         user_id = request.args.get('user_id', type=int)
         role = request.args.get('role', 'guest')
         limit = request.args.get('limit', 10, type=int)
-        
+
+        if role not in ('admin', 'user'):
+            return jsonify({'error': 'Must be logged in to view history'}), 400
+
         # Get history from database
         history = get_analysis_history(user_id, role, limit)
         
@@ -90,6 +95,11 @@ def get_stats():
     except Exception as e:
         return jsonify({'error': f'Failed to get stats: {str(e)}'}), 500
 
+
+# Endpoint to send images
+@app.route('/images/<filename>', methods=['GET'])
+def send_image(filename):
+    return send_from_directory('saved_images', filename)
 
 # return a simple message for the root endpoint
 @app.route('/')

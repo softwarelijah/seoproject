@@ -26,7 +26,7 @@ export default function SignUpPage() {
     }
     setButtonText("Creating account...");
 
-    const response = await fetch("http://localhost:5000/sign_up", {
+    const response = await fetch("http://localhost:5001/sign_up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

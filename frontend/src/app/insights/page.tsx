@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import FoodWasteAPI, { AnalysisResult, USDASearchResult } from "../lib/api";
+import { P } from "framer-motion/dist/types.d-Bq-Qm38R";
 
 interface InsightData {
   weeklyWaste: number;
@@ -43,6 +44,42 @@ export default function InsightsPage() {
     recommendations: [],
   });
   const [loading, setLoading] = useState(true);
+  const [userHistory, setUserHistory] = useState<Array<{
+    id: number;
+    user_id: number;
+    timestamp: string;
+    image_path: string;
+    class_name: string;
+    confidence_score: number;
+  }>>([]);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    const { id, role } = userData;
+
+    if (!id || !role) {
+      console.log("Missing user credentials in localStorage");
+      return;
+    }
+
+    const params = new URLSearchParams({
+      user_id: id.toString(),
+      role,
+      limit: "10"
+    });
+
+    fetch(`http://localhost:5000/history?${params.toString()}`)
+      .then(res => res.json())
+      .then(data => {
+        setUserHistory(data);
+        console.log("Previous analysis data:", data);
+      })
+      .catch(err => {
+        console.error("Error fetching previous analysis:", err);
+      });
+  }, []);
 
   useEffect(() => {
     // Simulate loading insights data
@@ -162,6 +199,96 @@ export default function InsightsPage() {
           </p>
         </motion.div>
 
+        {/* Personalized Analysis History */}
+        <Card className="mb-8 bg-white border border-gray-200 shadow-sm">
+          <CardHeader>
+            <CardTitle>Personalized Analysis History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600">
+              View your past insights and track your progress over time.
+            </p>
+          </CardContent>
+          {userHistory.length === 0 ? (
+  <CardContent className="p-6 text-center">
+    <p>No analysis history available. Please log in.</p>
+  </CardContent>
+            ) : (
+              <CardContent className="p-6 overflow-x-auto">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border border-gray-300 text-sm text-left overflow-hidden rounded-lg border border-gray-200 shadow-md">
+                    <thead className="bg-gray-100 text-center">
+                      <tr>
+                        <th className="border px-4 py-2">Date</th>
+                        <th className="border px-4 py-2">Class</th>
+                        <th className="border px-4 py-2">Confidence</th>
+                        <th className="border px-4 py-2">Image</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userHistory.map((item) => {
+                        const filename = item.image_path.split('\\').pop(); // Windows path safety
+                        return (
+                          <tr key={item.id} className="border-t text-center">
+                            <td className="border px-4 py-2">
+                              {new Date(item.timestamp).toLocaleString()}
+                            </td>
+                            <td className="border px-4 py-2">{item.class_name}</td>
+                            <td className="border px-4 py-2">
+                              {item.confidence_score.toFixed(2)}%
+                            </td>
+                            <td className="px-4 py-2 flex justify-center">
+        
+                                <img
+                                  src={`http://localhost:5000/images/${filename}`}
+                                  alt="Captured"
+                                  className="w-20 h-auto rounded hover:scale-105 transition-transform duration-200 cursor-pointer"
+                                  onClick={() => setSelectedImage(`http://localhost:5000/images/${filename}`)}
+                                />
+                              
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                
+              </CardContent>
+            )}
+
+            {selectedImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-50"
+                onClick={() => setSelectedImage(null)} // click background to close
+              >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();  // Prevent closing the modal twice
+                    setSelectedImage(null);
+                  }}
+                  className="mb-4 text-white text-3xl font-bold hover:text-gray-300"
+                >
+                  ✕
+                </button>
+                <motion.div
+                  className="bg-white rounded-lg p-4 max-w-3xl w-full relative"
+                  onClick={(e) => e.stopPropagation()} // prevent closing when clicking image/card
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                >
+                  <img
+                    src={selectedImage}
+                    alt="Full Size"
+                    className="w-full h-auto rounded shadow-md"
+                  />
+                </motion.div>
+              </div>
+            )}
+
+        </Card>
+
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <InsightCard
@@ -173,7 +300,7 @@ export default function InsightsPage() {
           />
           <InsightCard
             title="Monthly Savings"
-            value={`$${insightData.monthlySavings}`}
+            value={`$${insightData.monthlySavings.toFixed(2)}`}
             subtitle="Cost savings"
             icon={<DollarSign className="h-6 w-6 text-yellow-600" />}
             color="bg-yellow-100"
